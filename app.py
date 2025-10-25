@@ -121,7 +121,7 @@ def create_app():
             email = request.form['email'].strip().lower()
             name = request.form['name'].strip()
             password = request.form['password']
-            hashed = generate_password_hash(password)
+            hashed = generate_password_hash(password, method='pbkdf2:sha256')
             try:
                 cur = g.db.cursor()
                 cur.execute('INSERT INTO user (email,name,password,is_admin) VALUES (?,?,?,0)', (email, name, hashed))
