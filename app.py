@@ -4,6 +4,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 from datetime import datetime
+import pytz
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DB_PATH = os.path.join(BASE_DIR, 'data.db')
@@ -162,7 +163,11 @@ def create_app():
             LIMIT 1
         ''', (current_user.id,))
         current_shift = cur.fetchone()
-        return render_template('dashboard.html', current_shift=current_shift)
+        prague_tz = pytz.timezone('Europe/Prague')
+    now = datetime.now(prague_tz)
+    current_time = now.strftime("%H:%M:%S")
+    current_date = now.strftime("%A, %d. %B %Y")
+        return render_template('dashboard.html', current_shift=current_shift, current_time=current_time, current_date=current_date)
 
     @app.route('/logout')
     @login_required
