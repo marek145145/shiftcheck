@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card p-4 shadow-lg">
+  <h2 class="mb-3 text-center text-primary">{{ shift.title }}</h2>
+  <p class="text-center text-muted">{{ shift.description }}</p>
+  <hr>
+
+  {% if not progress %}
+    <form method="post" class="text-center">
+      <button type="submit" name="action" value="select_shift" class="btn btn-primary btn-lg">
+        🚆 Zahájit směnu
+      </button>
+    </form>
+  {% else %}
+    <form method="post">
+      <ul class="list-group mb-4">
+        {% for step in steps %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <span class="me-3 fw-bold">{{ loop.index }}.</span>
+              <span {% if progress.get(step.id) and progress[step.id]['completed'] %}style="text-decoration: line-through; color: gray;"{% endif %}>
+                {{ step.description }}
+              </span>
+            </div>
+
+            <button type="submit" name="action" value="toggle_{{ step.id }}" class="btn {% if progress.get(step.id) and progress[step.id]['completed'] %}btn-success{% else %}btn-outline-secondary{% endif %} btn-sm">
+              {% if progress.get(step.id) and progress[step.id]['completed'] %}
+                ✅ Hotovo
+              {% else %}
+                Označit hotovo
+              {% endif %}
+            </button>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="d-flex justify-content-between">
+        <a href="{{ url_for('shifts') }}" class="btn btn-secondary btn-lg">⬅ Zpět</a>
+        <button type="submit" name="action" value="complete_shift" class="btn btn-danger btn-lg">
+          🏁 Dokončit směnu
+        </button>
+      </div>
+    </form>
+  {% endif %}
+
+  <hr class="my-4">
+
+  <!-- Poznámky -->
+  <h4 class="text-center mb-3 text-primary">📝 Poznámky ke směně</h4>
+
+  <form method="post" class="mb-4">
+    <div class="input-group">
+      <input type="text" name="note_content" class="form-control form-control-lg" placeholder="Napiš poznámku..." required>
+      <button type="submit" name="action" value="add_note" class="btn btn-primary btn-lg">Přidat</button>
+    </div>
+  </form>
+
+  {% if notes %}
+    <ul class="list-group">
+      {% for note in notes %}
+        <li class="list-group-item">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <strong>{{ note.user_name }}</strong>
+              <small class="text-muted ms-2">{{ note.timestamp }}</small>
+              <p class="mt-1 mb-0" id="note_text_{{ note.id }}">{{ note.content }}</p>
+
+              {% if current_user.is_admin %}
+                <!-- Skrytý formulář pro úpravu -->
+                <form method="post" id="edit_form_{{ note.id }}" class="mt-2 d-none">
+                  <div class="input-group">
+                    <input type="text" name="edit_content_{{ note.id }}" value="{{ note.content }}" class="form-control form-control-sm">
+                    <button type="submit" name="action" value="edit_note_{{ note.id }}" class="btn btn-success btn-sm">💾 Uložit</button>
+                  </div>
+                </form>
+              {% endif %}
+            </div>
+
+            {% if current_user.is_admin %}
+              <div class="d-flex flex-column align-items-end">
+                <button type="button" class="btn btn-outline-warning btn-sm mb-1" onclick="toggleEdit({{ note.id }})">✏ Upravit</button>
+                <form method="post" style="display:inline;">
+                  <button type="submit" name="action" value="delete_note_{{ note.id }}" class="btn btn-outline-danger btn-sm">🗑 Smazat</button>
+                </form>
+              </div>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-info text-center">Zatím zde nejsou žádné poznámky.</div>
+  {% endif %}
+</div>
+
+<script>
+  function toggleEdit(noteId) {
+    const form = document.getElementById("edit_form_" + noteId);
+    const text = document.getElementById("note_text_" + noteId);
+    if (form.classList.contains("d-none")) {
+      form.classList.remove("d-none");
+      text.classList.add("d-none");
+    } else {
+      form.classList.add("d-none");
+      text.classList.remove("d-none");
+    }
+  }
+</script>
+{% endblock %}

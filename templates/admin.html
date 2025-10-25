@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Administrace směn{% endblock %}
+{% block content %}
+
+<div class="card p-4 shadow-sm mb-4">
+  <h3 class="mb-3 text-primary fw-bold">📋 Vytvořit novou směnu</h3>
+  <form method="POST">
+    <input type="hidden" name="form_type" value="create">
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Název směny:</label>
+      <input type="text" class="form-control" name="title" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Popis směny:</label>
+      <textarea class="form-control" name="description" rows="2"></textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Kroky směny (každý na nový řádek):</label>
+      <textarea class="form-control" name="steps" rows="6" placeholder="Krok 1&#10;Krok 2&#10;Krok 3..."></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary px-4">➕ Vytvořit směnu</button>
+  </form>
+</div>
+
+<div class="card p-4 shadow-sm">
+  <h3 class="mb-3 text-primary fw-bold">📚 Přehled směn</h3>
+  {% if shifts %}
+    <table class="table align-middle table-hover">
+      <thead class="table-light">
+        <tr>
+          <th style="width:40%">Název</th>
+          <th>Popis</th>
+          <th style="width:25%" class="text-center">Akce</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for shift in shifts %}
+          <tr>
+            <td class="fw-semibold">{{ shift.title }}</td>
+            <td>{{ shift.description or '-' }}</td>
+            <td class="text-center">
+              <a href="{{ url_for('edit_shift', shift_id=shift.id) }}" class="btn btn-sm btn-primary me-2">✏️ Upravit</a>
+              <form action="{{ url_for('delete_shift', shift_id=shift.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Opravdu chceš smazat tuto směnu?');">
+                <button type="submit" class="btn btn-sm btn-danger">🗑️ Smazat</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="alert alert-info">Zatím nejsou vytvořené žádné směny.</div>
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card p-4 shadow-lg">
+  <h3 class="mb-3 text-primary text-center">✏️ Úprava směny</h3>
+
+  <!-- Úprava informací o směně -->
+
+  <form method="post">
+    <div class="mb-3">
+      <label class="form-label fw-bold">Název směny</label>
+      <input type="text" name="title" value="{{ shift.title }}" class="form-control" required>
+    </div>
+
+```
+<div class="mb-3">
+  <label class="form-label fw-bold">Popis</label>
+  <textarea name="description" class="form-control" rows="2">{{ shift.description }}</textarea>
+</div>
+
+<div class="mb-3">
+  <label class="form-label fw-bold">Kroky směny (jeden na řádek)</label>
+  <textarea name="steps" class="form-control" rows="10">
+```
+
+{% for s in steps %}{{ s.description }}{% if not loop.last %}
+{% endif %}{% endfor %} </textarea> </div>
+
+```
+<div class="d-flex justify-content-between mb-4">
+  <a href="{{ url_for('admin') }}" class="btn btn-secondary btn-lg">⬅ Zpět</a>
+  <button type="submit" name="action" value="save_shift" class="btn btn-primary btn-lg">💾 Uložit změny</button>
+</div>
+```
+
+  </form>
+
+  <hr>
+
+  <!-- Sekce poznámek -->
+
+  <h4 class="text-center mb-3 text-primary">📝 Poznámky ke směně</h4>
+
+{% if notes %} <ul class="list-group">
+{% for note in notes %} <li class="list-group-item"> <div class="d-flex justify-content-between align-items-start"> <div class="flex-grow-1"> <strong>{{ note.user_name }}</strong> <small class="text-muted ms-2">{{ note.timestamp }}</small>
+
+```
+          <!-- Text poznámky -->
+          <p class="mt-2 mb-1" id="note_text_{{ note.id }}">{{ note.content }}</p>
+
+          <!-- Formulář pro úpravu poznámky -->
+          <form method="post" id="edit_form_{{ note.id }}" class="mt-2 d-none">
+            <div class="input-group input-group-sm">
+              <input type="text" name="edit_content_{{ note.id }}" value="{{ note.content }}" class="form-control" required>
+              <button type="submit" name="action" value="edit_note_{{ note.id }}" class="btn btn-success btn-sm">💾 Uložit</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" onclick="toggleEdit({{ note.id }})">Zrušit</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Admin akce -->
+        <div class="d-flex flex-column align-items-end ms-3">
+          <button type="button" class="btn btn-outline-warning btn-sm mb-1" onclick="toggleEdit({{ note.id }})">✏ Upravit</button>
+          <form method="post" style="display:inline;">
+            <button type="submit" name="action" value="delete_note_{{ note.id }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Opravdu smazat tuto poznámku?')">🗑 Smazat</button>
+          </form>
+        </div>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
+```
+
+{% else %} <div class="alert alert-info text-center">Zatím zde nejsou žádné poznámky.</div>
+{% endif %}
+
+</div>
+
+<script>
+function toggleEdit(noteId) {
+  const form = document.getElementById('edit_form_' + noteId);
+  const text = document.getElementById('note_text_' + noteId);
+  if (form.classList.contains('d-none')) {
+    form.classList.remove('d-none');
+    text.classList.add('d-none');
+  } else {
+    form.classList.add('d-none');
+    text.classList.remove('d-none');
+  }
+}
+</script>
+
+{% endblock %}

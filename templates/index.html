@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold mb-2">Vítej ve ShiftChecklist</h1>
+    <p>Jednoduchá aplikace pro strojvedoucí — vyber směnu a odškrtávej kroky během dne.</p>
+    <div class="mt-4">
+      <a href="{{ url_for('login') }}" class="px-4 py-2 bg-blue-600 text-white rounded">Přihlásit</a>
+      <a href="{{ url_for('register') }}" class="ml-2 px-4 py-2 border rounded">Registrovat</a>
+    </div>
+  </div>
+{% endblock %}

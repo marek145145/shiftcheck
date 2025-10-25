@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Upravit směnu{% endblock %}
+{% block content %}
+
+<div class="card p-4 shadow-sm">
+  <h3 class="mb-3 text-primary fw-bold">✏️ Upravit směnu</h3>
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Název směny:</label>
+      <input type="text" class="form-control" name="title" value="{{ shift.title }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Popis směny:</label>
+      <textarea class="form-control" name="description" rows="2">{{ shift.description }}</textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Kroky směny (každý na nový řádek):</label>
+      <textarea class="form-control" name="steps" rows="8">{{ steps_text }}</textarea>
+    </div>
+    <div class="d-flex justify-content-between mt-4">
+      <a href="{{ url_for('admin') }}" class="btn btn-secondary px-4">⬅️ Zpět</a>
+      <button type="submit" class="btn btn-primary px-4">💾 Uložit změny</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

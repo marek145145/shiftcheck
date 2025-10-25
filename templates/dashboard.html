@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Moje směna{% endblock %}
+{% block content %}
+<div class="card p-5 text-center">
+  <h2 class="mb-4">Moje aktuální směna</h2>
+
+  {% if current_shift %}
+    <div class="p-3">
+      <h4 class="text-primary mb-2">{{ current_shift.title }}</h4>
+      <p class="text-muted">{{ current_shift.description }}</p>
+      <a href="{{ url_for('shift_detail', shift_id=current_shift.id) }}" class="btn btn-primary btn-lg mt-3">
+        Pokračovat ve směně
+      </a>
+    </div>
+  {% else %}
+    <p class="text-secondary mb-4">Nemáš žádnou aktivní směnu.</p>
+    <a href="{{ url_for('shifts') }}" class="btn btn-primary btn-lg">
+      Vybrat novou směnu
+    </a>
+  {% endif %}
+</div>
+{% endblock %}

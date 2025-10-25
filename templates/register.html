@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="bg-white p-6 rounded shadow">
+    <h2 class="text-xl font-bold mb-4">Registrace</h2>
+    <form method="post">
+      <label class="block">Jméno<input name="name" required class="w-full p-2 border rounded" /></label>
+      <label class="block mt-2">Email<input name="email" required class="w-full p-2 border rounded" /></label>
+      <label class="block mt-2">Heslo<input name="password" type="password" required class="w-full p-2 border rounded" /></label>
+      <div class="mt-4">
+        <button class="px-4 py-2 bg-green-600 text-white rounded">Registrovat</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}
